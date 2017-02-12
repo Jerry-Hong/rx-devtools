@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+    "name": "RxJS DevTools",
+    "description": "RxJS debug helper",
+    "version": "1.0",
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "exclude_globs": ["https://www.google*"],
+        "js": ["js/contentScript.bundle.js"],
+        "run_at": "document_start",
+        "all_frames": true
+    }],
+    "background": {
+        "scripts": [
+            "js/background.bundle.js"
+        ]
+    },
+    "devtools_page": "devtools.html",
+    "permissions": [
+        "tabs",
+        "<all_urls>"
+    ],
+    "web_accessible_resources": ["debugOperator.js"]
+}

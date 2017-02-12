@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dev Panel</title>
+    <style>
+        html, body {
+            height: 300px;
+            width: 500px;
+        }
+        #draw {
+            font-size: 32px;
+            font-family: Courier New, Courier, monospace;
+        }
+        .tooltip {
+            cursor: pointer;
+        }
+        .tooltip .desc {
+            display: none;
+            position: absolute;
+            background-color: #f0f0f0;
+            font-size: 18px;
+        }
+        .tooltip:hover .desc{
+            display: inline-block;
+        }
+        .timeline {
+            display: block;
+
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>RxJS Dev Panel</h1>
+    <div id="draw">
+
+    </div>
+    <script src="js/devpanel.bundle.js"></script>
+</body>
+</html>

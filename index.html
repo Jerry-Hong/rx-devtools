@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RxJS Dev Tool</title>
+    <style>
+        html, body {
+            height: 300px;
+            width: 500px;
+        }
+        #draw {
+            font-size: 32px;
+            font-family: Courier New, Courier, monospace;
+        }
+        .tooltip {
+            cursor: pointer;
+        }
+        .tooltip .desc {
+            display: none;
+            position: absolute;
+            background-color: #f0f0f0;
+            font-size: 18px;
+        }
+        .tooltip:hover .desc{
+            display: inline-block;
+        }
+        .timeline {
+            display: block;
+
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
+    </style>
+    <style>
+    img{
+  position: absolute;
+  border-radius: 50%;
+  border: 3px white solid;
+  transform: translate3d(0,0,0);
+}
+</style>
+</head>
+<body>
+    <div id="draw">
+
+    </div>
+    <script>
+    window.RxDevTool = function (Observable) {
+    function render(element, innerText) {
+        element.innerHTML = innerText;
+    }
+
+    function transform(value) {
+        if (typeof value === 'object' || Array.isArray(value))
+            return `<span class="tooltip">o<pre class="desc"><code class="language-js">${JSON.stringify(value, null, 2)}</code></pre></span>`
+        return value
+    }
+
+    function debug(name) {
+        const draw = document.getElementById('draw');
+        const currentDiv = document.createElement('div');
+
+        const title = document.createElement('span');
+        title.innerText = name + ': ';
+        title.className = 'title';
+
+        const lineSpan = document.createElement('span');
+        lineSpan.className = 'timeline';
+
+        currentDiv.appendChild(title);
+        currentDiv.appendChild(lineSpan);
+        draw.appendChild(currentDiv);
+
+        return Observable.create((observer) => {
+
+            const timeline = Observable.of('').merge(
+                    Observable.interval(200).mapTo('-'),
+                    this.map((value) => transform(value)).catch(error => Rx.Observable.of('#'))
+                )
+                .scan((origin, next) => origin + next)
+                .finally(() => render(lineSpan, lineSpan.innerHTML + '|'))
+                .share();
+
+            const timelineSub = timeline.subscribe(
+                (line) => render(lineSpan, line),
+                (error) => console.error(error)
+            )
+            const scroll = Observable.fromEvent(lineSpan, 'scroll')
+                .throttleTime(100)
+                .pluck('target', 'scrollLeft');
+            const scrollSub = timeline
+                .takeUntil(
+                    scroll
+                    .pairwise()
+                    .filter(scrollLeft => scrollLeft[0] > scrollLeft[1])
+                )
+                .subscribe(() => {
+                    lineSpan.scrollLeft = lineSpan.scrollWidth;
+                });
+
+            timelineSub.add(scrollSub)
+
+            return this.subscribe((value) => {
+                observer.next(value);
+            }, (error) => {
+                observer.error(error);
+            }, () => {
+                timelineSub.unsubscribe()
+                observer.complete();
+            });
+        })
+    }
+
+    return debug;
+}
+
+
+
+</script>
+    <script src="./assets/main.js"></script>
+</body>
+</html>
