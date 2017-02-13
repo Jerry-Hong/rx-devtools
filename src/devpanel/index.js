@@ -27,14 +27,16 @@ const sourceFromBg = Observable.fromEventPattern(
 const allSource = {}; // 保存所有 source 
 
 sourceFromBg
-    .filter(x => x.type === 'create')
+    .filter(x => x.action ==='content_script_msg' && x.params.type === 'create')
+    .map(x => x.params)
     .subscribe((value) => {
         allSource[value.source] = new Subject();
         createTimeline(value.source);
     });
 
 sourceFromBg
-    .filter(x => x.type !== 'create')
+    .filter(x => x.action ==='content_script_msg' && x.params.type !== 'create')
+    .map(x => x.params)
     .subscribe((value) => {
         if(allSource[value.source]) {
             switch(value.type) {
@@ -54,6 +56,19 @@ sourceFromBg
                 break;                                
             }
         }
+    });
+
+sourceFromBg
+    .filter(x => x.action === 'content_script_open')
+    .subscribe((value) => {
+        // do something on content script conn open
+    });
+
+sourceFromBg
+    .filter(x => x.action === 'content_script_close')
+    .subscribe((value) => {
+        // do something on content script conn close
+        document.getElementById('draw').innerHTML = '';
     });
 
 
