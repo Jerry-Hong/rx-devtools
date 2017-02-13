@@ -1,17 +1,17 @@
 window.rxDevtool = function (Observable) {
 
     function debug(name) {
-        const event = new CustomEvent('passDataToDevtoolsPanel', { 
+        const event = new CustomEvent('tempData', { 
             detail: { source: name, type: 'create' } 
         });
         document.dispatchEvent(event);
         return Observable.create((observer) => {
-            const event = new CustomEvent('passDataToDevtoolsPanel', { 
+            const event = new CustomEvent('tempData', { 
                 detail: { source: name, type: 'subscribe' } 
             });
             document.dispatchEvent(event);
             return this.subscribe((value) => {
-                const event = new CustomEvent('passDataToDevtoolsPanel', { 
+                const event = new CustomEvent('tempData', { 
                     detail: {
                         source: name,
                         type: 'next',
@@ -21,7 +21,7 @@ window.rxDevtool = function (Observable) {
                 document.dispatchEvent(event);
                 observer.next(value);
             }, (error) => {
-                const event = new CustomEvent('passDataToDevtoolsPanel', { 
+                const event = new CustomEvent('tempData', { 
                     detail: {
                         source: name,
                         type: 'error',
@@ -31,7 +31,7 @@ window.rxDevtool = function (Observable) {
                 document.dispatchEvent(event);
                 observer.error(error);
             }, () => {
-                const event = new CustomEvent('passDataToDevtoolsPanel', { 
+                const event = new CustomEvent('tempData', { 
                     detail: {
                         source: name,
                         type: 'complete'

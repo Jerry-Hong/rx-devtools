@@ -1,10 +1,11 @@
 /*
 Inject Debuger Operator
 */
+const script = require('raw-loader!./debugOperator.js');
 const element = document.createElement('script');
-element.src = chrome.runtime.getURL('debugOperator.js');
+element.appendChild(document.createTextNode(script));
 (document.head || document.documentElement).appendChild(element);
-
+element.parentNode.removeChild(element);
 /*
 Connect Background 
 */
