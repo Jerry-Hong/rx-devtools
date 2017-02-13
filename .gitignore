@@ -1,3 +1,9 @@
+# ignore build
+build
+
+# ignore editor setting 
+.vscode
+
 # Logs
 logs
 *.log
