@@ -1,5 +1,9 @@
 # Rx Devtools
 
+> This is preview version
+
+![](http://i.giphy.com/l0Heb67CJnRLoaR0s.gif)
+
 ## Usage
 
 ```javascript
