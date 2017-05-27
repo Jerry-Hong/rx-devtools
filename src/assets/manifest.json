@@ -10,6 +10,9 @@
         "run_at": "document_start",
         "all_frames": true
     }],
+    "icons": {
+        "100": "/img/Rx_Logo_S.png"
+    },
     "background": {
         "scripts": [
             "js/background.bundle.js"
