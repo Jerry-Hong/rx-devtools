@@ -64,8 +64,8 @@ class MarbleDiagram extends Component {
 
         return (
             <g
-                className={cx('circle')}
                 key={index}
+                className={cx('circle')}
                 transform={`translate(${shift / 10}, 0)`}
             >
                 <circle cx="0" cy="0" r="20" stroke="#fff" strokeWidth="2" />
