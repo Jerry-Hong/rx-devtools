@@ -12,7 +12,7 @@ module.exports = {
         devtools: './src/devtools/index.js',
     },
     output: {
-        path: './build/js',
+        path: path.resolve(__dirname, './build/js'),
         filename: '[name].bundle.js'
     },
     module: {
