@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "webpack-dev-server --config webpack.config.app.js",
     "build": "rimraf build && webpack --config webpack.inject.js && webpack -p",
     "dev": "rimraf build/js && webpack -w",
     "watch": "webpack --config webpack.inject.js -w"
