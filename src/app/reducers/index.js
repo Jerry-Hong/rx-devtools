@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import source from './source.js';
+import source from './sourceList.js';
 
 export default combineReducers({
     source
