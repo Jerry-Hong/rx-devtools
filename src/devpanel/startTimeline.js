@@ -1,25 +1,28 @@
 import { Observable, Scheduler } from 'rxjs';
+import accurateTimer from './accurateTimer.js';
 
 export default function (sourceName, source) {
     const lineSpan = document.getElementById(sourceName + '-span')
     const timeline = Observable.of('')
                         .merge(
-                            Observable.interval(200)
+                            accurateTimer(200)
                                 .mapTo('-')
-                                .observeOn(Scheduler.async)
                                 .takeUntil(source.last()),
                             source
-                                .observeOn(Scheduler.queue)
                                 .map((value) => transform(value))
                                 .catch(error => Observable.of('#'))
                         )
-                        .scan((origin, next) => origin + next)
-                        .finally(() => render(lineSpan, lineSpan.innerHTML + '|'))
                         .share();
 
     const timelineSub = timeline.subscribe(
-            (line) => render(lineSpan, line),
-            (error) => console.error(error)
+            (line) => {
+                render(lineSpan, line)
+                if (line === '!') {
+                    timelineSub.unsubscribe();
+                }
+            },
+            (error) => console.error(error),
+            () => render(lineSpan, '|')
         )
     
     const scroll = Observable.fromEvent(lineSpan, 'scroll')
@@ -33,12 +36,16 @@ export default function (sourceName, source) {
         )
         .subscribe(() => {
             lineSpan.scrollLeft = lineSpan.scrollWidth;
+        }, (error) => {
+            console.error(error);
+        }, () => {
+            lineSpan.scrollLeft = lineSpan.scrollWidth;            
         });
 }
 
 
 function render(element, innerText) {
-    element.innerHTML = innerText;
+    element.innerHTML = element.innerHTML + innerText;
 }
 
 function transform(value) {
