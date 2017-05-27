@@ -32,7 +32,7 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
-    "react-router": "^4.1.1",
+    "react-router": "^3.0.5",
     "redux": "^3.6.0",
     "redux-duck": "^1.0.2",
     "rxjs": "^5.1.0"
