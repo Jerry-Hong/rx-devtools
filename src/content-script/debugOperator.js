@@ -1,46 +1,51 @@
-window.rxDevtool = function (Observable) {
+import { Subscription } from 'rxjs/Subscription';
+import { Subscriber } from 'rxjs/Subscriber';
+
+function createEvent(detail) {
+    return new CustomEvent('tempData', { detail });
+}
+
+const sendEvent = (data) => document.dispatchEvent(createEvent(data));
+
+class DebugSubscriber extends Subscriber {
+    constructor(destination, name) {
+        super(destination);
+        this.name = name;
+        this.destination = destination;
+        this.add(new Subscription(() => {
+            sendEvent({ source: name, type: 'finally' });
+        }));
+    }
+    _next(value) {
+        sendEvent({ source: this.name, type: 'next', data: value });
+        this.destination.next(value);
+    }
+    _error(error) {
+        sendEvent({ source: this.name, type: 'error', error: error });
+        this.destination.error(error);
+    }
+    _complete() {
+        sendEvent({ source: this.name, type: 'complete' });
+        this.destination.complete();
+    }
+}
+
+class DebugOperator {
+    constructor(name) {
+        this.name = name;
+    }
+
+    call(subscriber, source) {
+        sendEvent({ source: this.name, type: 'subscribe' });
+        return source.subscribe(new DebugSubscriber(subscriber, this.name));
+    }
+}
+
+window.rxDevtool = function () {
 
     function debug(name) {
-        const event = new CustomEvent('tempData', { 
-            detail: { source: name, type: 'create' } 
-        });
-        document.dispatchEvent(event);
-        return Observable.create((observer) => {
-            const event = new CustomEvent('tempData', { 
-                detail: { source: name, type: 'subscribe' } 
-            });
-            document.dispatchEvent(event);
-            return this.subscribe((value) => {
-                const event = new CustomEvent('tempData', { 
-                    detail: {
-                        source: name,
-                        type: 'next',
-                        data: value
-                    } 
-                });
-                document.dispatchEvent(event);
-                observer.next(value);
-            }, (error) => {
-                const event = new CustomEvent('tempData', { 
-                    detail: {
-                        source: name,
-                        type: 'error',
-                        error: error
-                    } 
-                });
-                document.dispatchEvent(event);
-                observer.error(error);
-            }, () => {
-                const event = new CustomEvent('tempData', { 
-                    detail: {
-                        source: name,
-                        type: 'complete'
-                    } 
-                });
-                document.dispatchEvent(event);
-                observer.complete();
-            });
-        })
+        sendEvent({ source: name, type: 'create' });
+        return this.lift(new DebugOperator(name));
     }
 
     return debug;
