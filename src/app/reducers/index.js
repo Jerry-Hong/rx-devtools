@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import sourceList from './sourceList.js';
+import sources from './sources.js';
 
 export default combineReducers({
-    sourceList
+    sources,
 });
