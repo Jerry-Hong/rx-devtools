@@ -27,6 +27,7 @@
     "react-redux": "^5.0.4",
     "react-router": "^4.1.1",
     "redux": "^3.6.0",
+    "redux-duck": "^1.0.2",
     "rxjs": "^5.1.0"
   },
   "devDependencies": {
