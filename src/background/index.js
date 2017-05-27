@@ -1,62 +1,77 @@
-let devtoolsPanelConn = {};
-let contentScriptConn = {};
+import { Observable } from 'rxjs';
+import {
+    CONTENT_SCRIPT_CONNECT, 
+    DEVTOOLS_PANEL_CONNECT,
+    DEVTOOLS_PANEL_INIT
+} from '../constants/index.js';
 
-chrome.runtime.onConnect.addListener((connPort) => {
+const connection = {};
 
-    let devtoolsPanelListener = (message, port, sendResponse) => {
-        devtoolsPanelConn[message.tabId] = connPort;
-        if (message.tabId in contentScriptConn) {
-            contentScriptConn[message.tabId].postMessage({ action: 'devtools_panel_open'});
-        }
-    };
+const source = Observable.fromEventPattern(
+    handler => chrome.runtime.onConnect.addListener(handler),
+    handler => chrome.runtime.onConnect.removeListener(handler)
+)
+.share();
 
-    let contentScriptListener = (message, port, sendResponse) => {
-        if (port.sender.tab.id in devtoolsPanelConn) {
-            devtoolsPanelConn[port.sender.tab.id].postMessage({
-                action: 'content_script_msg',
-                params: message.params
-            });
-        }
-    };
+source.filter(port => port.name === DEVTOOLS_PANEL_CONNECT)
+.mergeMap(port => 
+    Observable.fromEventPattern(
+        handler => port.onMessage.addListener(handler),
+        handler => port.onMessage.removeListener(handler)
+    )
+    .takeUntil(Observable.fromEventPattern(
+        handler => port.onDisconnect.addListener(handler)
+    )).finally(() => {
+        const key = Object
+                    .keys(connection)
+                    .find(key => connection[key].devPort === port);
+        delete connection[key].devPort;
+    }), 
+    (port, message) => {
+        return { port, message };
+    })
+.do(({ port, message }) => {
+    if (message.name === DEVTOOLS_PANEL_INIT) {
+        if (connection[message.tabId]) {
+            connection[message.tabId].devPort = port;
+        } else{
+            connection[message.tabId] = {
+                devPort: port
+            };  
+        }   
+    }
+})
+.subscribe(value => {
+    
+});
 
-    switch (connPort.name) {
-        case 'devtools_panel_conn':
-            connPort.onMessage.addListener(devtoolsPanelListener);
-            connPort.onDisconnect.addListener((port) => {
-                port.onMessage.removeListener(devtoolsPanelListener);
-
-                for (let tabId in devtoolsPanelConn) {
-                    if (devtoolsPanelConn[tabId] == port) {
-                        delete devtoolsPanelConn[tabId];
-                        if (tabId in contentScriptConn) {
-                            contentScriptConn[tabId].postMessage({ action: 'devtools_panel_close'});
-                        }
-                        break;
-                    }
-                }
-            });
-            break;
-
-        case 'content_script_conn':
-            contentScriptConn[connPort.sender.tab.id] = connPort;
-            if (connPort.sender.tab.id in devtoolsPanelConn) {
-                devtoolsPanelConn[connPort.sender.tab.id].postMessage({ action: 'content_script_open'});
-            }
-
-            connPort.onMessage.addListener(contentScriptListener);
-            connPort.onDisconnect.addListener((port) => {
-                port.onMessage.removeListener(contentScriptListener);
-
-                for (let tabId in contentScriptConn) {
-                    if (contentScriptConn[tabId] == port) {
-                        delete contentScriptConn[tabId];
-                        if (tabId in devtoolsPanelConn) {
-                            devtoolsPanelConn[tabId].postMessage({ action: 'content_script_close'});
-                        }
-                        break;
-                    }
-                }
-            });
-            break;
+source.filter(port => port.name === CONTENT_SCRIPT_CONNECT)
+.do(port => {
+    const id = port.sender.tab.id;
+    if (connection[id]) {
+        connection[id].contentPort = port;
+    } else{
+        connection[id] = {
+            contentPort: port
+        };  
+    }
+})
+.mergeMap(port =>
+    Observable.fromEventPattern(
+        handler => port.onMessage.addListener(handler),
+        handler => port.onMessage.removeListener(handler)
+    ).takeUntil(Observable.fromEventPattern(
+        handler => port.onDisconnect.addListener(handler)
+    )).finally(() => {
+        const id = port.sender.tab.id;
+        delete connection[id].contentPort;
+    }), 
+    (port, message) => {
+        return { port, message };
+    })
+.subscribe(({ port, message }) => {
+    const id = port.sender.tab.id;
+    if (connection[id] && connection[id].devPort) {
+        connection[id].devPort.postMessage(message);
     }
 });
