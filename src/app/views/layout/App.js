@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames/bind';
-import normalize from 'normalize.css';
+import 'normalize.css';
 
 import styles from './App.css';
 
