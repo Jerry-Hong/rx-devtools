@@ -1,0 +1,14 @@
+.container {
+    width: 100%;
+    overflow: scroll;
+    direction: rtl;
+}
+
+.marble-diagram {
+    min-width: 100%;
+}
+
+.circle {
+    dominant-baseline: central;
+    text-anchor: middle;
+}
