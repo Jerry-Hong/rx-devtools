@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import MarbleDiagram from '../components/MarbleDiagram.js';
 
 class SourceList extends Component {
     render() {
-        const list = [
-            { name: 'source1', timestamp: 0 },
-            { name: 'source2', timestamp: 1000 },
-        ];
+        const { sources } = this.props;
+        const list = Object.keys(this.props.sources).map(key => sources[key]);
 
+        // show message if there is no source
+        if (!list || !list.length) {
+            return <p>No source yet.</p>;
+        }
+
+        // show source list
         return (
             <ul>
                 {list.map(this.sourceLi)}
@@ -26,8 +30,6 @@ class SourceList extends Component {
     }
 }
 
-// export default connect(state => ({
-//     sourceList: state.sourceList,
-// }))(SourceList);
-
-export default SourceList;
+export default connect(state => ({
+    sources: state.sources,
+}))(SourceList);
