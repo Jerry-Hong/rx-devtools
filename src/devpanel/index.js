@@ -10,8 +10,20 @@ import App from '../app/views/layout/App.js';
 import { 
     DEVTOOLS_PANEL_CONNECT, 
     DEVTOOLS_PANEL_INIT,
-    CONTENT_SCRIPT_MESSAGE
+    CONTENT_SCRIPT_MESSAGE,
+    RX_DEVTOOL_START,
+    OBSERVABLE_COMPLETE,
+    OBSERVABLE_CREATED,
+    OBSERVABLE_ERROR,
+    OBSERVABLE_NEXT,
+    OBSERVABLE_SUBSCRIBE,
+    OBSERVABLE_UNSUBSCRIBE
 } from '../constants/index.js';
+import { 
+    addSource, 
+    subscribeSource
+} from '../app/reducers/sourceList.js';
+import { receiveComplete, receiveError, receiveNextValue, receiveUnsubscribe } from '../app/reducers/sourceItems.js';
 
 const store = createStore(rootReducer);
 
@@ -20,61 +32,6 @@ function realRender() {
         <App></App>
     </Provider>, document.getElementById('root'));
 }
-
-// import { Observable, Subject } from 'rxjs';
-// import createTimeline from './createTimeline.js';
-// import startTimeline from './startTimeline.js';
-
-/**
- * panel logic
- */
-
-// const draw = document.getElementById('draw');
-
-
-
-// let allSource = {}; // 保存所有 source 
-
-// sourceFromBg
-//     .filter(x => x.action ==='content_script_msg')
-//     .map(x => x.params)
-//     .subscribe((value) => {
-//         switch(value.type) {
-//         case 'create': 
-//             if(allSource[value.source]) {
-//                 break;
-//             }
-//             allSource[value.source] = new Subject();
-//             createTimeline(value.source);
-//             break;
-//         case 'subscribe':
-//             startTimeline(value.source, allSource[value.source])
-//             break;
-//         case 'next':
-//             allSource[value.source].next(value.data);
-//             break;
-//         case 'error':
-//             allSource[value.source].error(value.data);
-//             break;
-//         case 'complete':
-//             allSource[value.source].complete();
-//             break;
-//         case 'finally':
-//             allSource[value.source].next('!')
-//         default:
-//             break;                                
-//         }
-//     });
-
-
-
-// sourceFromBg
-//     .filter(x => x.action === 'content_script_close')
-//     .subscribe((value) => {
-//         // do something on content script conn close
-//         allSource = {};
-//         document.getElementById('draw').innerHTML = '';
-//     });
 
 function renderForNothing() {
     ReactDOM.render(<p>
@@ -97,13 +54,40 @@ function init(id) {
     const sourceFromBg = Observable.fromEventPattern(
         handler => bgConnection.onMessage.addListener(handler), 
         handler => bgConnection.onMessage.removeListener(handler)
-    ).share();
+    )
+    .filter(message => message.name === CONTENT_SCRIPT_MESSAGE)    
+    .map(message => message.params)
+    .share();
 
     sourceFromBg
-    .filter(message => message.name === CONTENT_SCRIPT_MESSAGE)
-    .subscribe((message) => {
-        console.log(message);
-        realRender();
+    .filter(data => data.type === RX_DEVTOOL_START)
+    .subscribe((data) => {
+        const { name, timestamp, value, error } = data;
+        switch (data.type) {
+        case RX_DEVTOOL_START:
+            realRender();
+            break;
+        case OBSERVABLE_CREATED:
+            store.dispatch(addSource(name, timestamp));
+            break;
+        case OBSERVABLE_SUBSCRIBE:
+            store.dispatch(subscribeSource(name, timestamp));
+            break;
+        case OBSERVABLE_NEXT:
+            store.dispatch(receiveNextValue(name, value, timestamp));
+            break;
+        case OBSERVABLE_ERROR:
+            store.dispatch(receiveError(name, error, timestamp));
+            break;
+        case OBSERVABLE_COMPLETE:
+            store.dispatch(receiveComplete(name, timestamp));
+            break;
+        case OBSERVABLE_UNSUBSCRIBE:
+            store.dispatch(receiveUnsubscribe(name, timestamp));
+            break;
+        default:
+            break;
+        }
     });
 
 }
