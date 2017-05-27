@@ -1,0 +1,12 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.app {
+    height: 100vh;
+    background-color: #1C1418;
+    color: #06A2C7;
+    font-size: 26px;
+}
