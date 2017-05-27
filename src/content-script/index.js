@@ -1,6 +1,7 @@
 import { 
     CONTENT_SCRIPT_CONNECT, 
-    CONTENT_SCRIPT_MESSAGE 
+    CONTENT_SCRIPT_MESSAGE,
+    RX_DEVTOOL_CUSTOM_EVENT
 } from '../constants/index.js';
 
 /** 
@@ -20,7 +21,7 @@ const backgroundPageConnection = chrome.runtime.connect({
     name: CONTENT_SCRIPT_CONNECT
 });
 
-document.addEventListener('tempData', (event) => {
+document.addEventListener(RX_DEVTOOL_CUSTOM_EVENT, (event) => {
     backgroundPageConnection.postMessage({
         name: CONTENT_SCRIPT_MESSAGE,
         params: event.detail
