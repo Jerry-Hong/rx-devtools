@@ -54,14 +54,19 @@ class MarbleDiagram extends Component {
     }
 
     bubble(item, index) {
+        const { axisLength } = this.state;
         const { createAt } = this.props.source;
-        const shiftX = (item.timestamp - createAt) / 10;
+        const shift = item.timestamp - createAt;
+
+        if (axisLength < shift) {
+            return;
+        }
 
         return (
             <g
                 className={cx('circle')}
                 key={index}
-                transform={`translate(${shiftX}, 0)`}
+                transform={`translate(${shift / 10}, 0)`}
             >
                 <circle cx="0" cy="0" r="20" stroke="#fff" strokeWidth="2" />
                 <text x="0" y="0" fill="#fff">{item.value}</text>
@@ -70,11 +75,11 @@ class MarbleDiagram extends Component {
     }
 
     axis(timestamp) {
-        const axisLength = timestamp - this.props.source.createAt;
+        const axisLength = Math.max(0, timestamp - this.props.source.createAt);
         this.setState({ axisLength });
 
         // XXX : fake end time
-        const isFinished = axisLength > 24000;
+        const isFinished = axisLength > 15000;
         if (!isFinished) {
             requestAnimationFrame(timestamp => {
                 this.axis(timestamp);
