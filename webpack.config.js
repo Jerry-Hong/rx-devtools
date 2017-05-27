@@ -37,5 +37,8 @@ module.exports = {
         new CopyWebpackPlugin([
             { context: './src/assets', from: '**/*', to: path.join(__dirname, './build') }
         ])
-    ]
-}
+    ],
+    node: {
+        fs: 'empty'
+    }
+};

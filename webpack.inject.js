@@ -1,5 +1,4 @@
 var path = require('path');
-var webpack = require('webpack');
 
 module.exports = {
     context: path.join(__dirname, './'),
@@ -7,7 +6,7 @@ module.exports = {
         debugOperator: './src/content-script/debugOperator.js',
     },
     output: {
-        path: './build/tmp',
+        path: path.resolve(__dirname, './build/tmp'),
         filename: '[name].js'
     },
     module: {
@@ -16,4 +15,4 @@ module.exports = {
             loader: 'babel-loader'
         }]
     }
-}
+};
