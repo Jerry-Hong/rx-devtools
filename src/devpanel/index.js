@@ -1,74 +1,111 @@
-import { Observable, Subject } from 'rxjs';
-import createTimeline from './createTimeline.js';
-import startTimeline from './startTimeline.js';
-
-/*
-    connect to background
-*/
-const bgConn = chrome.runtime.connect({ name: 'devtools_panel_conn' });
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Observable } from 'rxjs';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 
 
-bgConn.postMessage({
-    name: 'devtools_panel_msg',
-    tabId: chrome.devtools.inspectedWindow.tabId
-});
+import rootReducer from '../app/reducers/index.js';
+import App from '../app/views/layout/App.js';
+import { 
+    DEVTOOLS_PANEL_CONNECT, 
+    DEVTOOLS_PANEL_INIT,
+    CONTENT_SCRIPT_MESSAGE
+} from '../constants/index.js';
 
-/*
-    panel logic
-*/
+const store = createStore(rootReducer);
 
-const draw = document.getElementById('draw');
+function realRender() {
+    ReactDOM.render(<Provider store={store}>
+        <App></App>
+    </Provider>, document.getElementById('root'));
+}
 
-const sourceFromBg = Observable.fromEventPattern(
-    handler => bgConn.onMessage.addListener(handler), 
-    handler => bgConn.onMessage.removeListener(handler)
-).share();
+// import { Observable, Subject } from 'rxjs';
+// import createTimeline from './createTimeline.js';
+// import startTimeline from './startTimeline.js';
 
-const allSource = {}; // 保存所有 source 
+/**
+ * panel logic
+ */
 
-sourceFromBg
-    .filter(x => x.action ==='content_script_msg' && x.params.type === 'create')
-    .map(x => x.params)
-    .subscribe((value) => {
-        allSource[value.source] = new Subject();
-        createTimeline(value.source);
+// const draw = document.getElementById('draw');
+
+
+
+// let allSource = {}; // 保存所有 source 
+
+// sourceFromBg
+//     .filter(x => x.action ==='content_script_msg')
+//     .map(x => x.params)
+//     .subscribe((value) => {
+//         switch(value.type) {
+//         case 'create': 
+//             if(allSource[value.source]) {
+//                 break;
+//             }
+//             allSource[value.source] = new Subject();
+//             createTimeline(value.source);
+//             break;
+//         case 'subscribe':
+//             startTimeline(value.source, allSource[value.source])
+//             break;
+//         case 'next':
+//             allSource[value.source].next(value.data);
+//             break;
+//         case 'error':
+//             allSource[value.source].error(value.data);
+//             break;
+//         case 'complete':
+//             allSource[value.source].complete();
+//             break;
+//         case 'finally':
+//             allSource[value.source].next('!')
+//         default:
+//             break;                                
+//         }
+//     });
+
+
+
+// sourceFromBg
+//     .filter(x => x.action === 'content_script_close')
+//     .subscribe((value) => {
+//         // do something on content script conn close
+//         allSource = {};
+//         document.getElementById('draw').innerHTML = '';
+//     });
+
+function renderForNothing() {
+    ReactDOM.render(<p>
+        there is no connecting.
+    </p>, document.getElementById('root'));
+}
+
+function init(id) {
+    
+    renderForNothing();
+
+    /**
+     * connect and init
+     */
+    const bgConnection = chrome.runtime.connect({ 
+        name: DEVTOOLS_PANEL_CONNECT 
+    });
+    bgConnection.postMessage({ name: DEVTOOLS_PANEL_INIT, tabId: id });
+
+    const sourceFromBg = Observable.fromEventPattern(
+        handler => bgConnection.onMessage.addListener(handler), 
+        handler => bgConnection.onMessage.removeListener(handler)
+    ).share();
+
+    sourceFromBg
+    .filter(message => message.name === CONTENT_SCRIPT_MESSAGE)
+    .subscribe((message) => {
+        console.log(message);
+        realRender();
     });
 
-sourceFromBg
-    .filter(x => x.action ==='content_script_msg' && x.params.type !== 'create')
-    .map(x => x.params)
-    .subscribe((value) => {
-        if(allSource[value.source]) {
-            switch(value.type) {
-            case 'subscribe':
-                startTimeline(value.source, allSource[value.source])
-                break;
-            case 'next':
-                allSource[value.source].next(value.data);
-                break;
-            case 'error':
-                allSource[value.source].error(value.data);
-                break;
-            case 'complete':
-                allSource[value.source].complete();
-                break;
-            default:
-                break;                                
-            }
-        }
-    });
+}
 
-sourceFromBg
-    .filter(x => x.action === 'content_script_open')
-    .subscribe((value) => {
-        // do something on content script conn open
-    });
-
-sourceFromBg
-    .filter(x => x.action === 'content_script_close')
-    .subscribe((value) => {
-        // do something on content script conn close
-        document.getElementById('draw').innerHTML = '';
-    });
-
-
+init(chrome.devtools.inspectedWindow.tabId);
