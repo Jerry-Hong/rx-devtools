@@ -10,3 +10,9 @@ html, body {
     color: #06A2C7;
     font-size: 26px;
 }
+
+h1 {
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
