@@ -1,5 +1,6 @@
 .container {
     width: 100%;
+    margin: 15px 0 0;
     overflow-x: scroll;
     overflow-y: hidden;
     direction: rtl;
