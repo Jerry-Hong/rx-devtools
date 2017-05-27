@@ -9,7 +9,7 @@
 ```javascript
 import { Observable } from 'rxjs';
 
-Observable.prototype.debug = window.rxDevTool(Observable);
+Observable.prototype.debug = window.rxDevTool();
 
 Observable.interval(1000).take(5)
     .debug('source1')
