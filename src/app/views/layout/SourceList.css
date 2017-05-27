@@ -1,0 +1,16 @@
+.list {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 0 20px 0 40px;
+}
+
+.item {
+    margin: 30px 0 0;
+    padding: 0 0 0 20px;
+}
+
+.title {
+    margin: 0;
+    font-size: 1em;
+    font-weight: 400;
+}
