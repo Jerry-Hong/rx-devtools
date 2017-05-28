@@ -1,0 +1,23 @@
+.container {
+    width: 100%;
+    margin: 15px 0 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    direction: rtl;
+}
+
+.marble-diagram {
+    min-width: 100%;
+    height: 50px;
+}
+
+.circle {
+    dominant-baseline: central;
+    text-anchor: middle;
+    animation: opacity .3s 1;
+}
+
+@keyframes opacity {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
