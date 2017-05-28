@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import classNames from 'classnames/bind';
+
 import styles from './MarbleDiagram.css';
+
 const cx = classNames.bind(styles);
 
 class MarbleDiagram extends Component {
