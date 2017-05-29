@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
 
 import Bubble from './Bubble.js';
@@ -7,20 +6,15 @@ import styles from './MarbleDiagram.css';
 
 const cx = classNames.bind(styles);
 
-class MarbleDiagram extends Component {
-    state = {
+class MarbleDiagram extends PureComponent {
+    static defaultProps = {
+        createAt: 0,
         axisLength: 0,
+        sourceItems: [],
     };
 
-    componentDidMount() {
-        requestAnimationFrame(timestamp => {
-            this.axis(timestamp);
-        });
-    }
-
     render() {
-        const { axisLength } = this.state;
-        const { source: { createAt } } = this.props;
+        const { createAt, sourceItems, axisLength } = this.props;
 
         const length = axisLength / 10;
         const shiftY = 25;
@@ -45,12 +39,11 @@ class MarbleDiagram extends Component {
                             stroke="#fff"
                             strokeWidth="2"
                         />
-                        {this.props.sourceItems
+                        {sourceItems
                             .filter(({ type }) => type === 'value')
                             .map((item, index) => (
                                 <Bubble
                                     key={index}
-                                    index={index}
                                     item={item}
                                     createAt={createAt}
                                     axisLength={axisLength}
@@ -61,21 +54,6 @@ class MarbleDiagram extends Component {
             </div>
         );
     }
-
-    axis(timestamp) {
-        const axisLength = Math.max(0, timestamp - this.props.source.createAt);
-        this.setState({ axisLength });
-
-        // XXX : fake end time
-        const isFinished = axisLength > 15000;
-        if (!isFinished) {
-            requestAnimationFrame(timestamp => {
-                this.axis(timestamp);
-            });
-        }
-    }
 }
 
-export default connect((state, props) => ({
-    sourceItems: state.sourceItems[props.source.name],
-}))(MarbleDiagram);
+export default MarbleDiagram;
