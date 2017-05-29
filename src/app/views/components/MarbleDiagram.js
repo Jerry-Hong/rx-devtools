@@ -8,13 +8,9 @@ import styles from './MarbleDiagram.css';
 const cx = classNames.bind(styles);
 
 class MarbleDiagram extends Component {
-    constructor() {
-        super();
-
-        this.state = {
-            axisLength: 0,
-        };
-    }
+    state = {
+        axisLength: 0,
+    };
 
     componentDidMount() {
         requestAnimationFrame(timestamp => {
@@ -23,7 +19,10 @@ class MarbleDiagram extends Component {
     }
 
     render() {
-        const length = this.state.axisLength / 10;
+        const { axisLength } = this.state;
+        const { source: { createAt } } = this.props;
+
+        const length = axisLength / 10;
         const shiftY = 25;
 
         return (
