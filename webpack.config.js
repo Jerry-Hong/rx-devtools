@@ -42,7 +42,6 @@ module.exports = {
                         options: { plugins: () => [require('postcss-nested')] },
                     },
                 ],
-                include: [path.resolve(__dirname, './src')],
             },
         ],
     },
