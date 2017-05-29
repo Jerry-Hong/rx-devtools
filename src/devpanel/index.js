@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Observable } from 'rxjs';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { Router, hashHistory } from 'react-router';
 
-import rootReducer from '../app/reducers/index.js';
-import App from '../app/views/layout/App.js';
+import createStore from '../app/store/store.js';
+import routes from '../app/routers/index.js';
 import {
     DEVTOOLS_PANEL_CONNECT,
     DEVTOOLS_PANEL_INIT,
@@ -18,7 +18,7 @@ import {
     OBSERVABLE_SUBSCRIBE,
     OBSERVABLE_UNSUBSCRIBE,
 } from '../constants/index.js';
-import { addSource, subscribeSource } from '../app/reducers/sourceList.js';
+import { addSource, subscribeSource } from '../app/reducers/sources.js';
 import {
     receiveComplete,
     receiveError,
@@ -26,12 +26,12 @@ import {
     receiveUnsubscribe,
 } from '../app/reducers/sourceItems.js';
 
-const store = createStore(rootReducer);
+const store = createStore();
 
 function realRender() {
     ReactDOM.render(
         <Provider store={store}>
-            <App />
+            <Router history={hashHistory} routes={routes} />
         </Provider>,
         document.getElementById('root')
     );
