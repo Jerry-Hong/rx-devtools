@@ -8,6 +8,6 @@ const router = routerMiddleware(hashHistory);
 
 const enhancer = applyMiddleware(router);
 
-export default function (initialState) {
+export default function(initialState) {
     return createStore(rootReducer, initialState, enhancer);
 }

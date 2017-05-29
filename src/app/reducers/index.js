@@ -7,5 +7,5 @@ import sourceItems from './sourceItems.js';
 export default combineReducers({
     routing: routerReducer,
     sources,
-    sourceItems
+    sourceItems,
 });
