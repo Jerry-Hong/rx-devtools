@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 class SourceList extends Component {
     render() {
         const { sources } = this.props;
-        const list = Object.keys(this.props.sources).map(key => sources[key]);
+        const list = Object.keys(sources).map(key => sources[key]);
 
         // show message if there is no source
         if (!list || !list.length) {
