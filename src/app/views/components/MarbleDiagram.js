@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames/bind';
 
+import Bubble from './Bubble.js';
 import styles from './MarbleDiagram.css';
 
 const cx = classNames.bind(styles);
@@ -47,31 +48,18 @@ class MarbleDiagram extends Component {
                         />
                         {this.props.sourceItems
                             .filter(({ type }) => type === 'value')
-                            .map((item, index) => this.bubble(item, index))}
+                            .map((item, index) => (
+                                <Bubble
+                                    key={index}
+                                    index={index}
+                                    item={item}
+                                    createAt={createAt}
+                                    axisLength={axisLength}
+                                />
+                            ))}
                     </g>
                 </svg>
             </div>
-        );
-    }
-
-    bubble(item, index) {
-        const { axisLength } = this.state;
-        const { createAt } = this.props.source;
-        const shift = item.timestamp - createAt;
-
-        if (axisLength < shift) {
-            return;
-        }
-
-        return (
-            <g
-                key={index}
-                className={cx('circle')}
-                transform={`translate(${shift / 10}, 0)`}
-            >
-                <circle cx="0" cy="0" r="20" stroke="#fff" strokeWidth="2" />
-                <text x="0" y="0" fill="#fff">{item.value}</text>
-            </g>
         );
     }
 
