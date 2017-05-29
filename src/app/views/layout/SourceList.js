@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import MarbleDiagram from '../components/MarbleDiagram.js';
-
 import classNames from 'classnames/bind';
+
+import MarbleDiagram from '../components/MarbleDiagram.js';
 import styles from './SourceList.css';
+
 const cx = classNames.bind(styles);
 
 class SourceList extends Component {
