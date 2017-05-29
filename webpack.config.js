@@ -13,32 +13,50 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './build/js'),
-        filename: '[name].bundle.js'
+        filename: '[name].bundle.js',
     },
     module: {
-        rules: [{
-            test: /\.js$/,
-            use: {
-                loader: 'babel-loader'
-            }
-        }, {
-            test: /\.css/,
-            use: ['style-loader', {
-                loader: 'css-loader',
-                options: { modules: true, importLoaders: 1, camelCase: true, localIdentName: '[local]_[hash:base64:3]'  }
-            }, { 
-                loader: 'postcss-loader', 
-                options: { plugins: () => [require('postcss-nested')] } 
-            }]
-        }]
+        rules: [
+            {
+                test: /\.js$/,
+                use: {
+                    loader: 'babel-loader',
+                },
+                include: [path.resolve(__dirname, './src')],
+            },
+            {
+                test: /\.css/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            camelCase: true,
+                            localIdentName: '[local]_[hash:base64:3]',
+                        },
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: { plugins: () => [require('postcss-nested')] },
+                    },
+                ],
+                include: [path.resolve(__dirname, './src')],
+            },
+        ],
     },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),
         new CopyWebpackPlugin([
-            { context: './src/assets', from: '**/*', to: path.join(__dirname, './build') }
-        ])
+            {
+                context: './src/assets',
+                from: '**/*',
+                to: path.join(__dirname, './build'),
+            },
+        ]),
     ],
     node: {
-        fs: 'empty'
-    }
+        fs: 'empty',
+    },
 };

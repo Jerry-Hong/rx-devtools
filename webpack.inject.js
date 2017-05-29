@@ -7,12 +7,15 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './build/tmp'),
-        filename: '[name].js'
+        filename: '[name].js',
     },
     module: {
-        loaders: [{
-            test: /\.js$/,
-            loader: 'babel-loader'
-        }]
-    }
+        loaders: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                include: [path.resolve(__dirname, './src')],
+            },
+        ],
+    },
 };
