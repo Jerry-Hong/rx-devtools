@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: scroll;
+}
+
+.sidebar {
+    width: 300px;
+    flex-shrink: 0;
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames/bind';
 
-import MarbleDiagram from '../containers/MarbleDiagramContainer.js';
+import MarbleDiagram from '../../containers/MarbleDiagramContainer.js';
 import styles from './SourceList.css';
 
 const cx = classNames.bind(styles);

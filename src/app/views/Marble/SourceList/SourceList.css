@@ -1,8 +1,9 @@
 .list {
-    max-width: 80%;
+    width: 100%;
     margin: 0 auto;
     padding: 0 20px 0 40px;
     list-style: none;
+    overflow: scroll;
 }
 
 .item {
