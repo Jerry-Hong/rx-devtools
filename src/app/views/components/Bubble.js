@@ -103,7 +103,7 @@ class Bubble extends PureComponent {
                 {shouldShowCircle
                     ? <circle className={cx('circle')} cx="0" cy="0" r="15" />
                     : null}
-                {text
+                {shouldShowCircle
                     ? <text className={cx('text')} x="0" y="0">{text}</text>
                     : null}
                 {title ? <title>{title}</title> : null}
