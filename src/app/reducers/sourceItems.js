@@ -34,63 +34,7 @@ export const receiveUnsubscribe = (sourceName, timestamp) =>
 /**
  * reducer
  */
-const initialState = {
-    source1: [
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 2000,
-            value: 1,
-        },
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 3000,
-            value: 'END',
-        },
-        {
-            type: OBSERVABLE_COMPLETE,
-            timestamp: performance.now() + 3000,
-        },
-    ],
-    source2: [
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 4200,
-            value: 1,
-        },
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 5300,
-            value: 2,
-        },
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 6400,
-            value: 3,
-        },
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 7500,
-            value: 4,
-        },
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 8600,
-            value: {
-                hello: 2,
-                world: 3,
-            },
-        },
-        {
-            type: OBSERVABLE_NEXT,
-            timestamp: performance.now() + 9700,
-            value: ['how', 'are', 'you', 'today'],
-        },
-        {
-            type: OBSERVABLE_COMPLETE,
-            timestamp: performance.now() + 9700,
-        },
-    ],
-};
+const initialState = {};
 
 export default duck.createReducer(
     {
@@ -101,7 +45,7 @@ export default duck.createReducer(
                 ...items,
                 { type: OBSERVABLE_NEXT, value, timestamp },
             ];
-            return state;
+            return { ...state };
         },
         [RECEIVE_ERROR]: (state, action) => {
             const { sourceName, error, timestamp } = action.payload;
@@ -110,7 +54,7 @@ export default duck.createReducer(
                 ...items,
                 { type: OBSERVABLE_ERROR, error, timestamp },
             ];
-            return state;
+            return { ...state };
         },
         [RECEIVE_COMPLETE]: (state, action) => {
             const { sourceName, timestamp } = action.payload;
@@ -119,7 +63,7 @@ export default duck.createReducer(
                 ...items,
                 { type: OBSERVABLE_COMPLETE, timestamp },
             ];
-            return state;
+            return { ...state };
         },
         [RECEIVE_UNSUBSCRIBE]: (state, action) => {
             const { sourceName, timestamp } = action.payload;
@@ -128,7 +72,7 @@ export default duck.createReducer(
                 ...items,
                 { type: OBSERVABLE_UNSUBSCRIBE, timestamp },
             ];
-            return state;
+            return { ...state };
         },
     },
     initialState
