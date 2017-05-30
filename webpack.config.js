@@ -46,7 +46,6 @@ module.exports = {
         ],
     },
     plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin(),
         new CopyWebpackPlugin([
             {
                 context: './src/assets',
