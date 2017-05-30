@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames/bind';
 
-import MarbleDiagram from '../../containers/MarbleDiagramContainer.js';
+import SourceListItem from './SourceListItem.js';
 import styles from './SourceList.css';
 
 const cx = classNames.bind(styles);
@@ -20,20 +20,13 @@ class SourceList extends Component {
         // show source list
         return (
             <ol className={cx('list')}>
-                {list.map(this.sourceLi)}
+                {list.map(source => (
+                    <SourceListItem
+                        key={`${source.name}-${source.timestamp}`}
+                        name={source.name}
+                    />
+                ))}
             </ol>
-        );
-    }
-
-    sourceLi(source) {
-        return (
-            <li
-                className={cx('item')}
-                key={`${source.name}-${source.timestamp}`}
-            >
-                <h3 className={cx('title')}>{source.name}</h3>
-                <MarbleDiagram source={source} />
-            </li>
         );
     }
 }
