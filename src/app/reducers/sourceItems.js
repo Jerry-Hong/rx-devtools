@@ -49,7 +49,6 @@ const initialState = {
         {
             type: OBSERVABLE_COMPLETE,
             timestamp: performance.now() + 3000,
-            value: 'Hello World',
         },
     ],
     source2: [
@@ -76,12 +75,15 @@ const initialState = {
         {
             type: OBSERVABLE_NEXT,
             timestamp: performance.now() + 8600,
-            value: 'V',
+            value: {
+                hello: 2,
+                world: 3,
+            },
         },
         {
             type: OBSERVABLE_NEXT,
             timestamp: performance.now() + 9700,
-            value: 'VI',
+            value: ['how', 'are', 'you', 'today'],
         },
         {
             type: OBSERVABLE_COMPLETE,

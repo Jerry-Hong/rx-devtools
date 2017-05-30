@@ -41,6 +41,24 @@ function textContent(type, value) {
     return `${value}`.length > 1 ? `...${value[0]}` : value;
 }
 
+/**
+ * get title of bubble
+ * @param {*} value OBSERVABLE value
+ * @return {string} title in bubble
+ */
+function titleContent(value) {
+    if (!value) {
+        return '';
+    }
+
+    const valueType = typeof value;
+    if (valueType === 'number' && valueType === 'string') {
+        return value;
+    }
+
+    return JSON.stringify(value);
+}
+
 class Bubble extends PureComponent {
     static defaultProps = {
         item: {
@@ -59,6 +77,7 @@ class Bubble extends PureComponent {
         const shouldShowCircle = item.type === OBSERVABLE_NEXT;
 
         const text = textContent(item.type, item.value);
+        const title = titleContent(item.value);
 
         if (axisLength < shift) {
             return <g />;
@@ -87,6 +106,7 @@ class Bubble extends PureComponent {
                 {text
                     ? <text className={cx('text')} x="0" y="0">{text}</text>
                     : null}
+                {title ? <title>{title}</title> : null}
             </g>
         );
     }
