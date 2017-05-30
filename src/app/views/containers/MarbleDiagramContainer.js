@@ -11,6 +11,7 @@ class MarbleDiagramContainer extends Component {
     };
 
     state = {
+        startTime: performance.now(),
         axisLength: 0,
     };
 
@@ -35,7 +36,8 @@ class MarbleDiagramContainer extends Component {
     axis(timestamp) {
         // draw axis
         const { createAt } = this.props.source;
-        const axisLength = Math.max(0, timestamp - createAt);
+        const duration = timestamp - this.state.startTime;
+        const axisLength = Math.max(0, duration - createAt);
         this.setState({ axisLength });
 
         // check if we should keep drawing
