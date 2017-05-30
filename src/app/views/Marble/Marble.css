@@ -4,6 +4,8 @@
 }
 
 .sidebar {
-    width: 300px;
+    width: 35%;
+    min-width: 200px;
+    max-width: 300px;
     flex-shrink: 0;
 }

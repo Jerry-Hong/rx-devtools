@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames/bind';
 
+import CurrentTarget from './CurrentTarget/CurrentTarget.js';
 import SourceList from './sourceList/SourceList.js';
 import styles from './Marble.css';
 
@@ -12,7 +13,9 @@ class Marble extends Component {
         return (
             <div className={cx('container')}>
                 <SourceList className={cx('list')} />
-                <div className={cx('sidebar')}>側欄</div>
+                <div className={cx('sidebar')}>
+                    <CurrentTarget />
+                </div>
             </div>
         );
     }
