@@ -25,7 +25,7 @@ const theme = {
     base0C: '#a1efe4',
     base0D: '#66d9ef',
     base0E: '#ae81ff',
-    base0F: '#cc6633'
+    base0F: '#cc6633',
 };
 
 class CurrentTarget extends Component {
@@ -41,5 +41,5 @@ class CurrentTarget extends Component {
 }
 
 export default connect(state => ({
-    data: state.currentTarget
+    data: state.currentTarget,
 }))(CurrentTarget);
