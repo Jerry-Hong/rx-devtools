@@ -11,6 +11,34 @@ import styles from './Bubble.css';
 
 const cx = classNames.bind(styles);
 
+/**
+ * get text in bubble
+ * @param {string} type OBSERVABLE types: NEXT | ERROR | COMPLETE | UNSUBSCRIBE
+ * @param {*} value OBSERVABLE value
+ * @return {string} text in bubble
+ */
+function textContent (type, value) {
+    if (type === OBSERVABLE_COMPLETE) {
+        return '';
+    }
+
+    if (type === OBSERVABLE_ERROR) {
+        return '✕';
+    }
+
+    if (type === OBSERVABLE_UNSUBSCRIBE) {
+        return '!';
+    }
+
+    const valueType = typeof value;
+
+    if (valueType !== 'number' && valueType !== 'string') {
+        return '';
+    }
+
+    return `${value}`.length > 1 ? `...${value[0]}` : value;
+}
+
 class Bubble extends PureComponent {
     static defaultProps = {
         item: {
@@ -26,10 +54,9 @@ class Bubble extends PureComponent {
         const shift = item.timestamp - createAt;
 
         const shouldShowEnd = item.type === OBSERVABLE_COMPLETE;
-        const shouldShowCircle =
-            item.type === OBSERVABLE_COMPLETE || item.type === OBSERVABLE_NEXT;
+        const shouldShowCircle = item.type === OBSERVABLE_NEXT;
 
-        const text = this.textContent();
+        const text = textContent(item.type, item.value);
 
         if (axisLength < shift) {
             return <g />;
@@ -45,8 +72,8 @@ class Bubble extends PureComponent {
                           className={cx('end')}
                           x1="0"
                           x2="0"
-                          y1="-30"
-                          y2="30"
+                          y1="-15"
+                          y2="15"
                       />
                     : null}
                 {shouldShowCircle
@@ -57,26 +84,6 @@ class Bubble extends PureComponent {
                     : null}
             </g>
         );
-    }
-
-    textContent() {
-        const { type, value } = this.props.item;
-
-        if (type === OBSERVABLE_ERROR) {
-            return '✕';
-        }
-
-        if (type === OBSERVABLE_UNSUBSCRIBE) {
-            return '!';
-        }
-
-        const valueType = typeof value;
-
-        if (valueType !== 'number' && valueType !== 'string') {
-            return '';
-        }
-
-        return `${value}`.length > 1 ? `...${value[0]}` : value;
     }
 }
 
