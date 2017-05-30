@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
 
+import {
+    OBSERVABLE_NEXT,
+} from '../../../constants/index.js';
 import Bubble from './Bubble.js';
 import styles from './MarbleDiagram.css';
 
@@ -19,9 +22,12 @@ class MarbleDiagram extends PureComponent {
         const length = axisLength / 10;
         const shiftY = 25;
 
+        const middleItem = sourceItems.filter(item => (item.type === OBSERVABLE_NEXT));
+        const lastItem = sourceItems.filter(item => (item.type !== OBSERVABLE_NEXT));
+
         return (
             <div className={cx('container')}>
-                <svg className={cx('marble-diagram')} width={length}>
+                <svg className={cx('marble-diagram')} width={length+30}>
                     <g transform={`translate(0, ${shiftY})`}>
                         <line
                             x1="0"
@@ -39,7 +45,10 @@ class MarbleDiagram extends PureComponent {
                             stroke="#fff"
                             strokeWidth="2"
                         />
-                        {sourceItems.map((item, index) => (
+                        {[
+                            ...lastItem,
+                            ...middleItem,
+                        ].map((item, index) => (
                             <Bubble
                                 key={index}
                                 item={item}

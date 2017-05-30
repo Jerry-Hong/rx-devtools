@@ -29,6 +29,11 @@ const initialState = {
         createAt: performance.now(),
         subscribeAt: performance.now() + 1234, // if not subscribe will be undefined,
     },
+    source2: {
+        name: 'source2',
+        createAt: performance.now() + 2000,
+        subscribeAt: performance.now(), // if not subscribe will be undefined,
+    },
 };
 
 export default duck.createReducer(

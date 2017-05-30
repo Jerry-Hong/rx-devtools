@@ -42,9 +42,50 @@ const initialState = {
             value: 1,
         },
         {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 3000,
+            value: 'END',
+        },
+        {
             type: OBSERVABLE_COMPLETE,
             timestamp: performance.now() + 3000,
             value: 'Hello World',
+        },
+    ],
+    source2: [
+        {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 4200,
+            value: 1,
+        },
+        {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 5300,
+            value: 2,
+        },
+        {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 6400,
+            value: 3,
+        },
+        {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 7500,
+            value: 4,
+        },
+        {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 8600,
+            value: 'V',
+        },
+        {
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 9700,
+            value: 'VI',
+        },
+        {
+            type: OBSERVABLE_COMPLETE,
+            timestamp: performance.now() + 9700,
         },
     ],
 };

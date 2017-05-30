@@ -72,12 +72,12 @@ class Bubble extends PureComponent {
                           className={cx('end')}
                           x1="0"
                           x2="0"
-                          y1="-15"
-                          y2="15"
+                          y1="-20"
+                          y2="20"
                       />
                     : null}
                 {shouldShowCircle
-                    ? <circle className={cx('circle')} cx="0" cy="0" r="20" />
+                    ? <circle className={cx('circle')} cx="0" cy="0" r="15" />
                     : null}
                 {text
                     ? <text className={cx('text')} x="0" y="0">{text}</text>

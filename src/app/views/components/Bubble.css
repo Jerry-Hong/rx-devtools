@@ -18,7 +18,7 @@
 
 .text {
     fill: #fff;
-    font-size: .6em;
+    font-size: 12px;
 }
 
 @keyframes opacity {
