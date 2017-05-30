@@ -13,7 +13,6 @@ class Header extends Component {
 
         return (
             <header className={cx('header')}>
-                <img className={cx('logo')} src={logo} alt="logo" />
                 <div className={cx('menu')}>
                     <div
                         className={cx('menu-item', {
