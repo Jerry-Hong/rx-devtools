@@ -23,31 +23,20 @@ export const subscribeSource = (name, subscribeAt) =>
 /**
  * reducer
  */
-const initialState = {
-    source1: {
-        name: 'source1',
-        createAt: performance.now(),
-        subscribeAt: performance.now() + 1234, // if not subscribe will be undefined,
-    },
-    source2: {
-        name: 'source2',
-        createAt: performance.now() + 2000,
-        subscribeAt: performance.now(), // if not subscribe will be undefined,
-    },
-};
+const initialState = {};
 
 export default duck.createReducer(
     {
         [ADD_SOURCE]: (state, action) => {
             state[action.payload.name] = action.payload;
-            return state;
+            return { ...state };
         },
         [SUBSCRIBE_SOURCE]: (state, action) => {
             state[action.payload.name] = {
                 ...state[action.payload.name],
                 subscribeAt: action.payload.subscribeAt,
             };
-            return state;
+            return { ...state };
         },
     },
     initialState
