@@ -1,7 +1,22 @@
-.circle {
+.end {
+    stroke: #fff;
+    stroke-width: 3;
+}
+
+.bubble {
     dominant-baseline: central;
     text-anchor: middle;
     animation: opacity .3s 1;
+}
+
+.circle {
+    stroke: #fff;
+    stroke-width: 2;
+}
+
+.text {
+    fill: #fff;
+    font-size: .6em;
 }
 
 @keyframes opacity {

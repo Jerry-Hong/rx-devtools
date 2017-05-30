@@ -37,9 +37,14 @@ export const receiveUnsubscribe = (sourceName, timestamp) =>
 const initialState = {
     source1: [
         {
-            type: 'value',
-            timestamp: performance.now() + 3000,
+            type: OBSERVABLE_NEXT,
+            timestamp: performance.now() + 2000,
             value: 1,
+        },
+        {
+            type: OBSERVABLE_COMPLETE,
+            timestamp: performance.now() + 3000,
+            value: 'Hello World',
         },
     ],
 };

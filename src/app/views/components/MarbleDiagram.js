@@ -39,16 +39,14 @@ class MarbleDiagram extends PureComponent {
                             stroke="#fff"
                             strokeWidth="2"
                         />
-                        {sourceItems
-                            .filter(({ type }) => type === 'value')
-                            .map((item, index) => (
-                                <Bubble
-                                    key={index}
-                                    item={item}
-                                    createAt={createAt}
-                                    axisLength={axisLength}
-                                />
-                            ))}
+                        {sourceItems.map((item, index) => (
+                            <Bubble
+                                key={index}
+                                item={item}
+                                createAt={createAt}
+                                axisLength={axisLength}
+                            />
+                        ))}
                     </g>
                 </svg>
             </div>
