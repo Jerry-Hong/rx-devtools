@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { OBSERVABLE_NEXT } from '../../../constants/index.js';
 import MarbleDiagram from '../components/MarbleDiagram.js';
 
 class MarbleDiagramContainer extends Component {
@@ -32,16 +33,27 @@ class MarbleDiagramContainer extends Component {
     }
 
     axis(timestamp) {
-        const axisLength = Math.max(0, timestamp - this.props.source.createAt);
+        // draw axis
+        const { createAt } = this.props.source;
+        const axisLength = Math.max(0, timestamp - createAt);
         this.setState({ axisLength });
 
-        // XXX : fake end time
-        const isFinished = axisLength > 15000;
-        if (!isFinished) {
-            requestAnimationFrame(timestamp => {
-                this.axis(timestamp);
-            });
+        // check if we should keep drawing
+        const { sourceItems } = this.props;
+        const endBubble = sourceItems.filter(
+            item => item.type !== OBSERVABLE_NEXT
+        )[0];
+        const shouldFinish =
+            endBubble &&
+            endBubble.timestamp &&
+            axisLength >= endBubble.timestamp - createAt;
+        if (shouldFinish) {
+            return;
         }
+
+        requestAnimationFrame(timestamp => {
+            this.axis(timestamp);
+        });
     }
 }
 
