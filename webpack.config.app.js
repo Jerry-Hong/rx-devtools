@@ -40,6 +40,14 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                use: [
+                    {
+                        loader: 'file-loader'
+                    }
+                ]
+            },
         ],
     },
     plugins: [
