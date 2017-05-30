@@ -1,12 +1,14 @@
-.end {
-    stroke: #fff;
-    stroke-width: 2;
-}
-
 .bubble {
     dominant-baseline: central;
     text-anchor: middle;
     animation: opacity .3s 1;
+    cursor: pointer;
+}
+
+.end {
+    stroke: #fff;
+    stroke-width: 2;
+
 }
 
 .circle {

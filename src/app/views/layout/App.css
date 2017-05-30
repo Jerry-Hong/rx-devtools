@@ -5,7 +5,9 @@ html, body {
 }
 
 .app {
+    display: flex;
     height: 100vh;
+    flex-direction: column;
     background-color: #1C1418;
     color: #06A2C7;
     font-size: 26px;
