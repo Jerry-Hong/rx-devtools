@@ -23,11 +23,13 @@ class MarbleDiagramContainer extends Component {
 
     render() {
         const { axisLength } = this.state;
-        const { sourceItems, source: { createAt } } = this.props;
+        const { sourceItems, source: { createAt, name } } = this.props;
+
         return (
             <MarbleDiagram
                 createAt={createAt}
                 axisLength={axisLength}
+                sourceName={name}
                 sourceItems={sourceItems}
             />
         );

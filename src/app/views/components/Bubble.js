@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames/bind';
 
 import {
@@ -7,6 +8,7 @@ import {
     OBSERVABLE_NEXT,
     OBSERVABLE_UNSUBSCRIBE,
 } from '../../../constants/index.js';
+import { setCurrentTarget } from '../../reducers/currentTarget.js';
 import styles from './Bubble.css';
 
 const cx = classNames.bind(styles);
@@ -17,7 +19,7 @@ const cx = classNames.bind(styles);
  * @param {*} value OBSERVABLE value
  * @return {string} text in bubble
  */
-function textContent (type, value) {
+function textContent(type, value) {
     if (type === OBSERVABLE_COMPLETE) {
         return '';
     }
@@ -66,6 +68,9 @@ class Bubble extends PureComponent {
             <g
                 className={cx('bubble')}
                 transform={`translate(${shift / 10}, 0)`}
+                onClick={() => {
+                    this.updateCurrentTarget();
+                }}
             >
                 {shouldShowEnd
                     ? <line
@@ -85,6 +90,18 @@ class Bubble extends PureComponent {
             </g>
         );
     }
+
+    updateCurrentTarget() {
+        const { dispatch, source, item } = this.props;
+
+        dispatch(
+            setCurrentTarget({
+                belong: source,
+                timestamp: item.timestamp,
+                value: item.value,
+            })
+        );
+    }
 }
 
-export default Bubble;
+export default connect()(Bubble);
