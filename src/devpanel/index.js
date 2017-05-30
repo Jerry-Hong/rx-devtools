@@ -66,28 +66,29 @@ function init(id) {
         .share();
 
     sourceFromBg.subscribe(data => {
-        const { name, timestamp, value, error } = data;
+        const { source, timestamp, value, error } = data;
         switch (data.type) {
             case RX_DEVTOOL_START:
                 realRender();
                 break;
             case OBSERVABLE_CREATED:
-                store.dispatch(addSource(name, timestamp));
+                store.dispatch(addSource(source, timestamp));
+                console.log(store.getState());
                 break;
             case OBSERVABLE_SUBSCRIBE:
-                store.dispatch(subscribeSource(name, timestamp));
+                store.dispatch(subscribeSource(source, timestamp));
                 break;
             case OBSERVABLE_NEXT:
-                store.dispatch(receiveNextValue(name, value, timestamp));
+                store.dispatch(receiveNextValue(source, value, timestamp));
                 break;
             case OBSERVABLE_ERROR:
-                store.dispatch(receiveError(name, error, timestamp));
+                store.dispatch(receiveError(source, error, timestamp));
                 break;
             case OBSERVABLE_COMPLETE:
-                store.dispatch(receiveComplete(name, timestamp));
+                store.dispatch(receiveComplete(source, timestamp));
                 break;
             case OBSERVABLE_UNSUBSCRIBE:
-                store.dispatch(receiveUnsubscribe(name, timestamp));
+                store.dispatch(receiveUnsubscribe(source, timestamp));
                 break;
             default:
                 break;
