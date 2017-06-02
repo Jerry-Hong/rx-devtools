@@ -14,3 +14,11 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('root')
 );
+
+/**
+ * just for dev
+ */
+
+import dev from './dev.js';
+
+dev(store);
