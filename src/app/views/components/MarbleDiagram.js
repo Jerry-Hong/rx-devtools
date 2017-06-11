@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
 
 import { OBSERVABLE_NEXT } from '../../../constants/index.js';
-import Bubble from './Bubble.js';
+import Bubble from './Bubble/Bubble.js';
 import styles from './MarbleDiagram.css';
 
 const cx = classNames.bind(styles);
