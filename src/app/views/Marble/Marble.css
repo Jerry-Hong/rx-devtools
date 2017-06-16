@@ -1,6 +1,5 @@
 .container {
     display: flex;
-    overflow: scroll;
 }
 
 .sidebar {
