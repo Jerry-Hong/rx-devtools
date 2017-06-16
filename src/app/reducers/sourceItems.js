@@ -67,7 +67,18 @@ export default duck.createReducer(
         },
         [RECEIVE_UNSUBSCRIBE]: (state, action) => {
             const { sourceName, timestamp } = action.payload;
+            const isCompleteOrError =
+                state[sourceName].findIndex(
+                    x =>
+                        x.type === OBSERVABLE_COMPLETE ||
+                        x.type === OBSERVABLE_ERROR
+                ) > -1;
+            if (isCompleteOrError) {
+                return state;
+            }
+
             const items = state[sourceName] || [];
+
             state[sourceName] = [
                 ...items,
                 { type: OBSERVABLE_UNSUBSCRIBE, timestamp },

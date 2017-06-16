@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
 
-import { OBSERVABLE_NEXT } from '../../../constants/index.js';
-import Bubble from './Bubble.js';
+import Bubble from './Bubble/Bubble.js';
 import styles from './MarbleDiagram.css';
 
 const cx = classNames.bind(styles);
@@ -13,20 +12,20 @@ class MarbleDiagram extends PureComponent {
         axisLength: 0,
         sourceName: '',
         sourceItems: [],
+        clickBubble: () => {},
     };
 
     render() {
-        const { createAt, sourceName, sourceItems, axisLength } = this.props;
+        const {
+            createAt,
+            sourceName,
+            sourceItems,
+            axisLength,
+            clickBubble,
+        } = this.props;
 
         const length = axisLength / 10;
         const shiftY = 25;
-
-        const middleItem = sourceItems.filter(
-            item => item.type === OBSERVABLE_NEXT
-        );
-        const lastItem = sourceItems.filter(
-            item => item.type !== OBSERVABLE_NEXT
-        );
 
         return (
             <div className={cx('container')}>
@@ -48,15 +47,20 @@ class MarbleDiagram extends PureComponent {
                             stroke="#fff"
                             strokeWidth="2"
                         />
-                        {[...lastItem, ...middleItem].map((item, index) => (
-                            <Bubble
-                                key={index}
-                                item={item}
-                                source={sourceName}
-                                createAt={createAt}
-                                axisLength={axisLength}
-                            />
-                        ))}
+                        {sourceItems.map(item => {
+                            const shift = item.timestamp - createAt;
+
+                            return (
+                                <Bubble
+                                    key={sourceName + item.timestamp}
+                                    show={shift < axisLength}
+                                    shift={shift}
+                                    item={item}
+                                    sourceName={sourceName}
+                                    onClick={clickBubble}
+                                />
+                            );
+                        })}
                     </g>
                 </svg>
             </div>

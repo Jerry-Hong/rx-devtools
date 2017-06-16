@@ -58,9 +58,11 @@ export default function(store) {
      */
 
     Observable.interval(1000)
-        .take(3)
         .debug('source1')
-        .zip(Observable.of(1000, 234, 5, 65665, 34231, 123, 7676), (x, y) => x)
+        .zip(
+            Observable.of({ name: 'Rulin' }, { name: 'Jerry' }, []),
+            (x, y) => y
+        )
         .debug('source2')
-        .subscribe(x => x);
+        .subscribe(x => console.log('dev', x));
 }

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { OBSERVABLE_NEXT } from '../../../constants/index.js';
+import { setCurrentTarget } from '../../reducers/currentTarget.js';
+import animationObservable from '../../util/animationObservable.js';
 import MarbleDiagram from '../components/MarbleDiagram.js';
 
 class MarbleDiagramContainer extends Component {
@@ -16,9 +18,24 @@ class MarbleDiagramContainer extends Component {
     };
 
     componentDidMount() {
-        requestAnimationFrame(timestamp => {
-            this.axis(timestamp);
-        });
+        const { source: { createAt } } = this.props;
+
+        this.animation = animationObservable(this.state.startTime)
+            .map(duration => Math.max(0, duration - createAt))
+            .do(axisLength => this.setState({ axisLength }))
+            .takeWhile(axisLength => {
+                const { sourceItems } = this.props;
+                const endBubble = sourceItems.find(
+                    item => item.type !== OBSERVABLE_NEXT
+                ) || {};
+                return !(endBubble.timestamp &&
+                    axisLength >= endBubble.timestamp - createAt);
+            })
+            .subscribe(() => {});
+    }
+
+    componentWillUnmount() {
+        this.animation.unsubscribe();
     }
 
     render() {
@@ -31,36 +48,20 @@ class MarbleDiagramContainer extends Component {
                 axisLength={axisLength}
                 sourceName={name}
                 sourceItems={sourceItems}
+                clickBubble={this.clickBubble}
             />
         );
     }
 
-    axis(timestamp) {
-        // draw axis
-        const { createAt } = this.props.source;
-        const duration = timestamp - this.state.startTime;
-        const axisLength = Math.max(0, duration - createAt);
-        this.setState({ axisLength });
-
-        // check if we should keep drawing
-        const { sourceItems } = this.props;
-        const endBubble = sourceItems.filter(
-            item => item.type !== OBSERVABLE_NEXT
-        )[0];
-        const shouldFinish =
-            endBubble &&
-            endBubble.timestamp &&
-            axisLength >= endBubble.timestamp - createAt;
-        if (shouldFinish) {
-            return;
-        }
-
-        requestAnimationFrame(timestamp => {
-            this.axis(timestamp);
-        });
-    }
+    clickBubble = data => {
+        const { setCurrentTarget } = this.props;
+        setCurrentTarget(data);
+    };
 }
 
-export default connect((state, props) => ({
-    sourceItems: state.sourceItems[props.source.name],
-}))(MarbleDiagramContainer);
+export default connect(
+    (state, props) => ({
+        sourceItems: state.sourceItems[props.source.name],
+    }),
+    { setCurrentTarget }
+)(MarbleDiagramContainer);
