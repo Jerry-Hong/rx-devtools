@@ -1,4 +1,5 @@
 import { createDuck } from 'redux-duck';
+import { RESET_STORE } from '../../constants/index.js';
 
 /**
  * duck
@@ -38,6 +39,7 @@ export default duck.createReducer(
             };
             return { ...state };
         },
+        [RESET_STORE]: () => ({}),
     },
     initialState
 );

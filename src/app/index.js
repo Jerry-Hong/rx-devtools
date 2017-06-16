@@ -19,6 +19,6 @@ ReactDOM.render(
  * just for dev
  */
 
-import dev from './dev.js';
-
-dev(store);
+if (process.env.ENV_VARIABLE !== 'production') {
+    require('./dev.js').default(store);
+}

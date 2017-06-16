@@ -10,6 +10,7 @@ import {
     DEVTOOLS_PANEL_CONNECT,
     DEVTOOLS_PANEL_INIT,
     CONTENT_SCRIPT_MESSAGE,
+    CONTENT_SCRIPT_DISCONNECT,
     RX_DEVTOOL_START,
     OBSERVABLE_COMPLETE,
     OBSERVABLE_CREATED,
@@ -17,6 +18,7 @@ import {
     OBSERVABLE_NEXT,
     OBSERVABLE_SUBSCRIBE,
     OBSERVABLE_UNSUBSCRIBE,
+    RESET_STORE,
 } from '../constants/index.js';
 import { addSource, subscribeSource } from '../app/reducers/sources.js';
 import {
@@ -60,40 +62,45 @@ function init(id) {
     const sourceFromBg = Observable.fromEventPattern(
         handler => bgConnection.onMessage.addListener(handler),
         handler => bgConnection.onMessage.removeListener(handler)
-    )
+    ).share();
+
+    sourceFromBg
+        .filter(message => message.name === CONTENT_SCRIPT_DISCONNECT)
+        .subscribe(() => {
+            store.dispatch({ type: RESET_STORE });
+        });
+
+    sourceFromBg
         .filter(message => message.name === CONTENT_SCRIPT_MESSAGE)
         .map(message => message.params)
-        .share();
-
-    sourceFromBg.subscribe(data => {
-        const { source, timestamp, value, error } = data;
-        switch (data.type) {
-            case RX_DEVTOOL_START:
-                realRender();
-                break;
-            case OBSERVABLE_CREATED:
-                store.dispatch(addSource(source, timestamp));
-                console.log(store.getState());
-                break;
-            case OBSERVABLE_SUBSCRIBE:
-                store.dispatch(subscribeSource(source, timestamp));
-                break;
-            case OBSERVABLE_NEXT:
-                store.dispatch(receiveNextValue(source, value, timestamp));
-                break;
-            case OBSERVABLE_ERROR:
-                store.dispatch(receiveError(source, error, timestamp));
-                break;
-            case OBSERVABLE_COMPLETE:
-                store.dispatch(receiveComplete(source, timestamp));
-                break;
-            case OBSERVABLE_UNSUBSCRIBE:
-                store.dispatch(receiveUnsubscribe(source, timestamp));
-                break;
-            default:
-                break;
-        }
-    });
+        .subscribe(data => {
+            const { source, timestamp, value, error } = data;
+            switch (data.type) {
+                case RX_DEVTOOL_START:
+                    realRender();
+                    break;
+                case OBSERVABLE_CREATED:
+                    store.dispatch(addSource(source, timestamp));
+                    break;
+                case OBSERVABLE_SUBSCRIBE:
+                    store.dispatch(subscribeSource(source, timestamp));
+                    break;
+                case OBSERVABLE_NEXT:
+                    store.dispatch(receiveNextValue(source, value, timestamp));
+                    break;
+                case OBSERVABLE_ERROR:
+                    store.dispatch(receiveError(source, error, timestamp));
+                    break;
+                case OBSERVABLE_COMPLETE:
+                    store.dispatch(receiveComplete(source, timestamp));
+                    break;
+                case OBSERVABLE_UNSUBSCRIBE:
+                    store.dispatch(receiveUnsubscribe(source, timestamp));
+                    break;
+                default:
+                    break;
+            }
+        });
 }
 
 init(chrome.devtools.inspectedWindow.tabId);
