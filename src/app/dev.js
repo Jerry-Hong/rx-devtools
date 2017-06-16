@@ -57,10 +57,15 @@ export default function(store) {
      * for dev testing 
      */
 
-    Observable.interval(1000)
+    Observable.interval(1000) // 0, 1, 2, 3
         .debug('source1')
         .zip(
-            Observable.of({ name: 'Rulin' }, { name: 'Jerry' }, []),
+            Observable.of(
+                { name: 'Rulin' },
+                { name: 'Anna' },
+                { name: 'Jerry' },
+                { name: 'Hello' }
+            ),
             (x, y) => y
         )
         .debug('source2')

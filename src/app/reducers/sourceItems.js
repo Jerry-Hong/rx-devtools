@@ -4,6 +4,7 @@ import {
     OBSERVABLE_ERROR,
     OBSERVABLE_NEXT,
     OBSERVABLE_UNSUBSCRIBE,
+    RESET_STORE,
 } from '../../constants/index.js';
 
 /**
@@ -85,6 +86,7 @@ export default duck.createReducer(
             ];
             return { ...state };
         },
+        [RESET_STORE]: () => ({}),
     },
     initialState
 );
